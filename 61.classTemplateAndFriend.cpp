@@ -20,7 +20,7 @@ template <class T1, class T2>
 class Person
 {
   // 全局函数 类内实现
-  friend void printPerson(Person<T1, T2> p)
+  friend printPerson(Person<T1, T2> p)
   {
     cout << "类内实现--姓名：" << p.m_Name << " 年龄：" << p.m_Age << endl;
   }
