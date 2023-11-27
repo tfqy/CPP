@@ -60,5 +60,6 @@
     "streambuf": "cpp",
     "typeinfo": "cpp",
     "set": "cpp"
-  } // 格式化时调整include的顺序（按字母排序）
+  },
+  "editor.inlineSuggest.showToolbar": "onHover" // 格式化时调整include的顺序（按字母排序）
 }
