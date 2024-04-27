@@ -59,7 +59,8 @@
     "stdexcept": "cpp",
     "streambuf": "cpp",
     "typeinfo": "cpp",
-    "set": "cpp"
+    "set": "cpp",
+    "concepts": "cpp"
   },
   "editor.inlineSuggest.showToolbar": "always" // 格式化时调整include的顺序（按字母排序）
 }
