@@ -1,166 +1,158 @@
+#include <cmath>
 #include <iostream>
 using namespace std;
 
 class FS
 {
 private:
-  double sb; // 实部
-  double xb; // 虚部
+  double sb;
+  double xb;
 
 public:
   // 构造函数
-  FS(double s = 0, double x = 0) : sb(s), xb(x) {}
+  FS(double r = 0.0, double i = 0.0) : sb(r), xb(i) {}
 
-  // 显示函数
-  void print()
+  // 访问器函数
+  double getsb() const { return sb; }
+  double getxb() const { return xb; }
+
+  void print();
+
+  // 运算符重载
+  FS operator+(const FS &c) const
   {
-    if (xb >= 0)
-    {
-      if (sb == 0)
-      {
-        if (xb == 1)
-        {
-          cout << "i" << endl;
-        }
-        else
-        {
-          cout << xb << "i" << endl;
-        }
-      }
-      else
-      {
-        if (xb == 1)
-        {
-          cout << sb << " + i" << endl;
-        }
-        else
-        {
-          cout << sb << " + " << xb << "i" << endl;
-        }
-      }
-    }
+    return FS(sb + c.sb, xb + c.xb);
+  }
+
+  FS operator-(const FS &c) const
+  {
+    if (sb == c.sb && xb == c.xb)
+      return FS(0, 0);
     else
-    {
-      if (sb == 0)
-      {
-        if (xb == -1)
-        {
-          cout << "-i" << endl;
-        }
-        else
-        {
-          cout << -xb << "i" << endl;
-        }
-      }
-      else
-      {
-        if (xb == -1)
-        {
-          cout << sb << " - i" << endl;
-        }
-        else
-        {
-          cout << sb << " - " << -xb << "i" << endl;
-        }
-      }
-    }
+      return FS(sb - c.sb, xb - c.xb);
   }
 
-  // 重载运算符“ + ”
-  FS operator+(const FS &f)
-  {
-    return FS(sb + f.sb, xb + f.xb);
-  }
+  friend FS operator+(const FS &c1, const FS &c2);
+  friend FS operator-(const FS &c1, const FS &c2);
 
-  // 重载运算符“ - ”
-  FS operator-(const FS &f)
-  {
-    return FS(sb - f.sb, xb - f.xb);
-  }
-
-  // 友元函数重载“ + ”
-  friend FS operator+(const FS &f1, const FS &f2)
-  {
-    return FS(f1.sb + f2.sb, f1.xb + f2.xb);
-  }
-
-  // 友元函数重载“ - ”
-  friend FS operator-(const FS &f1, const FS &f2)
-  {
-    return FS(f1.sb - f2.sb, f1.xb - f2.xb);
-  }
-
-  // 重载 >> 运算符
-  friend istream &operator>>(istream &is, FS &f)
-  {
-    is >> f.sb >> f.xb;
-    return is;
-  }
-
-  // 重载 << 运算符
-  friend ostream &operator<<(ostream &os, const FS &f)
-  {
-    if (f.xb >= 0)
-    {
-      if (f.sb == 0)
-      {
-        if (f.xb == 1)
-        {
-          os << "i";
-        }
-        else
-        {
-          os << f.xb << "i";
-        }
-      }
-      else
-      {
-        if (f.xb == 1)
-        {
-          os << f.sb << " + i";
-        }
-        else
-        {
-          os << f.sb << " + " << f.xb << "i";
-        }
-      }
-    }
-    else
-    {
-      if (f.sb == 0)
-      {
-        if (f.xb == -1)
-        {
-          os << "-i";
-        }
-        else
-        {
-          os << -f.xb << "i";
-        }
-      }
-      else
-      {
-        if (f.xb == -1)
-        {
-          os << f.sb << " - i";
-        }
-        else
-        {
-          os << f.sb << " - " << -f.xb << "i";
-        }
-      }
-    }
-    return os;
-  }
+  friend istream &operator>>(istream &is, FS &c);
+  friend ostream &operator<<(ostream &os, const FS &c);
 };
+
+void FS::print()
+{ 
+
+  if (sb == 0 && xb == 0)
+  {
+    cout << 0 << endl;
+  }
+  else if (sb == 0)
+  {
+    if (xb == 1)
+    {
+      cout << "i" << endl;
+    }
+    else if (xb == -1)
+    {
+      cout << "-i" << endl;
+    }
+    else
+    {
+      cout << xb << "i" << endl;
+    }
+  }
+  else
+  {
+    cout << sb;
+    if (xb > 0)
+    {
+      if (xb == 1)
+      {
+        cout << "+i" << endl;
+      }
+      else
+      {
+        cout << "+" << xb << "i" << endl;
+      }
+    }
+    else if (xb < 0)
+    {
+      if (xb == -1)
+      {
+        cout << "-i" << endl;
+      }
+      else
+      {
+        cout << "-" << -xb << "i" << endl;
+      }
+    }
+  }
+}
+
+// 友元函数重载 +
+FS operator+(const FS &c1, const FS &c2)
+{
+  return FS(c1.sb + c2.sb, c1.xb + c2.xb);
+}
+
+// 友元函数重载 -
+FS operator-(const FS &c1, const FS &c2)
+{
+  if (c1.sb == c2.sb && c1.xb == c2.xb)
+    return FS(0, 0);
+  else
+    return FS(c1.sb - c2.sb, c1.xb - c2.xb);
+}
+
+// 重载 >> 运算符
+istream &operator>>(istream &is, FS &c)
+{
+  is >> c.sb >> c.xb;
+  return is;
+}
+
+// 重载 << 运算符
+ostream &operator<<(ostream &os, const FS &c)
+{
+  if (c.sb == 0 && c.xb == 0)
+    os << 0;
+  else if (c.sb == 0)
+  {
+    if (c.xb == 1)
+      os << "i";
+    else if (c.xb == -1)
+      os << "-i";
+    else
+      os << c.xb << "i";
+  }
+  else
+  {
+    os << c.sb;
+    if (c.xb > 0)
+    {
+      if (c.xb == 1)
+        os << "+i";
+      else
+        os << "+" << c.xb << "i";
+    }
+    else if (c.xb < 0)
+    {
+      if (c.xb == -1)
+        os << "-i";
+      else
+        os << "-" << -c.xb << "i";
+    }
+  }
+  return os;
+}
 
 int main()
 {
-  FS f1, f2;
-  cin >> f1 >> f2;
+  FS c1, c2;
+  cin >> c1 >> c2;
 
-  FS sum = f1 + f2;
-  FS diff = f1 - f2;
+  FS sum = c1 + c2;
+  FS diff = c1 - c2;
 
   cout << sum << endl;
   cout << diff << endl;

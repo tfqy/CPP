@@ -9,15 +9,6 @@
 
 typedef int Status; // 返回值状态
 
-/*日志
-3.29:完成快递员登录,采用单链表,快递格口采用预定义长度的带头双链表,
-头结点存放快递柜信息(总数,存数,现指向地址)
-3.30:null
-3.31:未完成取件码存储,未完成格口的取出
-4.2:手机号的取出,快递员的取出,手机号子表的插入
-4.6:大改,chaos tap mad,未完成:取件码生成,存快递
-*/
-
 //******************node*****type*************************此处定义所有节点类型
 typedef struct locker_node *locker_pointer; // 指向柜口节点的指针
 
@@ -478,7 +469,7 @@ Status insert_phonenum_list(phonenum_list head, struct phonenum_node *node) // �
 }
 Status insert_code_list(code_list head, struct code_node *node) // 关于取件码的存储
 {
-  code_pointer p = node;
+  // code_pointer p = node;
   node->next = NULL;
   code_pointer rear = head->prior;
   rear->next = node; // 后插入链表

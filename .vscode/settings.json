@@ -18,7 +18,6 @@
   "code-runner.fileDirectoryAsCwd": true, // 将code runner终端的工作目录切换到文件目录再运行，对依赖cwd的程序产生影响；如果为false，executorMap要加cd $dir
 
   "C_Cpp.clang_format_sortIncludes": true,
-  "aiXcoder.showTrayIcon": true,
   "files.associations": {
     "array": "cpp",
     "atomic": "cpp",
