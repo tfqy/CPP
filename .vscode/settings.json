@@ -61,7 +61,8 @@
     "set": "cpp",
     "concepts": "cpp",
     "bitset": "cpp",
-    "regex": "cpp"
+    "regex": "cpp",
+    "valarray": "cpp"
   },
   "editor.inlineSuggest.showToolbar": "always" // 格式化时调整include的顺序（按字母排序）
 }
