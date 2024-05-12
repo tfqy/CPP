@@ -8,6 +8,7 @@
 #define FALSE 0
 
 typedef int Status; // 返回值状态
+char myCode[7];
 
 //******************node*****type*************************此处定义所有节点类型
 typedef struct locker_node *locker_pointer; // 指向柜口节点的指针
@@ -87,20 +88,27 @@ Status insert_deliverman_list(deliverman_list head, struct deliverman_node *node
 Status insert_locker_list(locker_list head);
 Status insert_phonenum_list(phonenum_list head, struct phonenum_node *node);
 Status insert_code_list(code_list list, struct code_node *node);
+Status insert_code_addr_list(phonenum_pointer p, struct code_addr_node *node);
+Status insert_record_list(deliverman_pointer head, struct code_node *node);
 deliverman_pointer locate_deliverman_list(deliverman_list head, char Dcode[7]);
 phonenum_pointer locate_phonenum_list(phonenum_list head, char phonenum[12]);
 code_pointer locate_code_list(code_list list, char code[7]);
+code_pointer locate_code_addr_list(phonenum_pointer node, char code[7]);
+code_pointer locate_record_list(deliverman_pointer dp, char num[6]);
 Status de_locker_list(locker_list head, locker_pointer node);
 Status de_code_list(code_list list, code_pointer f);
+Status de_code_addr_list(phonenum_pointer node, code_addr_pointer f);
+Status de_phonenum_list(phonenum_list head, phonenum_pointer p);
+Status de_deliverman_list(deliverman_list head, deliverman_pointer f);
 Status put_stuff(code_list cL, deliverman_pointer dP, locker_list lL, phonenum_list pL, struct stuffs stuff, int size);
 Status get_stuff(code_list cL, phonenum_list pL, char code[7], int mode);
 Status sign_up(deliverman_list list);
 Status sign_in(deliverman_list list, deliverman_pointer *p);
 void see(code_list cL, deliverman_list dL, locker_list lL, phonenum_list pL);
 void print_Dhistory(deliverman_pointer dp);
-code_pointer locate_record_list(deliverman_pointer dp, char num[6]);
+void create_code(code_list head, char *Scode, int size);
+void findStuffByPhoneNum(phonenum_list pL, char phonenum[12]);
 
-char myCode[7];
 int main()
 {
   /*先预定义两个快递员并添加到内存*/
@@ -148,14 +156,16 @@ int main()
     int i;
     char c;
     char code[7];
-    printf("欢迎使用格口递柜\n");
+    printf("\n欢迎使用格口递柜\n");
     printf("请选择功能:输入功能序号\n");
     printf("1.取快递\n");
-    printf("2.管理员模式\n");
+    printf("2.快递员模式\n");
+    printf("3.根据手机号查询取件码\n");
+    printf("0.退出\n");
     scanf("%d", &i); // 读取输入字符
     if (i == 1)      // 用户接口
     {
-      printf("1.取快递\n");
+      printf("\n1.取快递\n");
       printf("2.返回上一层\n");
       scanf("%d", &i);
       getchar();
@@ -167,14 +177,14 @@ int main()
           scanf("%s", code);
           getchar();
         } while (get_stuff(cL, pL, code, 0) == TRUE); // 0代表为客户模式,返回ture继续取件
-        continue;                                     // 取件完成返回上一层
+        continue; // 取件完成返回上一层
       }
     }
     else if (i == 2) // 管理员接口
     {
       while (1)
       {
-        printf("1.登录\n");
+        printf("\n1.登录\n");
         printf("2.注册\n");
         printf("3.返回上一层\n");
         scanf("%d", &i);
@@ -187,10 +197,10 @@ int main()
             while (1)
             {
               /*快递员界面*/
-              printf("1.投递快递\n");
+              printf("\n1.投递快递\n");
               printf("2.查询快递柜状态\n");
               printf("3.查询快递状态(取出)\n");
-              printf("4.测试窗口\n");
+              printf("4.查看所有数据\n");
               printf("5.返回主页\n");
               scanf("%d", &i);
               if (i == 1)
@@ -229,7 +239,6 @@ int main()
               }
               else if (i == 2)
               {
-
                 printf("当前快递柜状态\n");
                 printf("当前大号柜已用%d/%d\n", lockers_L->state, lockers_L->num);
                 printf("当前中号柜已用%d/%d\n", lockers_M->state, lockers_M->num);
@@ -259,7 +268,7 @@ int main()
                     if (cP == NULL) // 输入错误,或物品已被取出
                     {
                       printf("输入错误,或该物品已被取出,重新输入\n");
-                      continue;
+                      break;
                     }
                     else
                     {
@@ -268,10 +277,10 @@ int main()
                       printf("您的快递单号:%s已被 \n", num);
                       printf("快递员:%s取出\n", dP->Dphonenum);
                       printf("*************end**************\n");
-                      if (s == TRUE)
-                        continue;
-                      else
-                        break;
+                      // if (s == TRUE)
+                      //   continue;
+                      // else
+                      break;
                     }
                   }
                   continue;
@@ -331,6 +340,19 @@ int main()
           continue;
         }
       }
+    }
+    else if (i == 3)
+    {
+      // 根据手机号查询取件码
+
+      char phonenum[12];
+      printf("请输入手机号:");
+      scanf("%s", phonenum);
+      findStuffByPhoneNum(pL, phonenum);
+    }
+    else if (i == 0)
+    {
+      exit(0);
     }
     else
     {
@@ -752,7 +774,7 @@ Status get_stuff(code_list cL, phonenum_list pL, char code[7], int mode)
         de_phonenum_list(pL, cP->phonenum_p); // 删除该号码节点
         de_code_list(cL, cP);                 // 删除该取件码节点
         printf("取件成功!\n");
-        printf("按y键继续取件,n退出取件\n");
+        printf("n退出取件\n");
         i = getchar();
         getchar();
         //	printf("%d", (int)i);
@@ -772,7 +794,7 @@ Status get_stuff(code_list cL, phonenum_list pL, char code[7], int mode)
           printf("用户%s:您尚有快递未取,按y键继续取件,n退出取件\n", cP->phonenum_p->phonenum);
         }
         else
-          printf("按y键继续取件,n退出取件\n");
+          printf("n退出取件\n");
         i = getchar();
         getchar();
         // printf("%d", (int)i);
@@ -828,4 +850,23 @@ Status put_stuff(code_list cL, deliverman_pointer dP, locker_list lL, phonenum_l
   insert_code_addr_list(pP, caP); // 插入索引
   insert_record_list(dP, cP);     // 插入记录
   return OK;
+}
+
+void findStuffByPhoneNum(phonenum_list pL, char phonenum[12])
+{
+  // 传入手机号链表从中查询手机号，并查出手机号对应的快递
+  phonenum_pointer p = pL;
+  while (p != NULL)
+  {
+    if (strcmp(p->phonenum, phonenum) == 0)
+    {
+      code_addr_pointer q = p->sublist_head->next;
+      while (q != NULL)
+      {
+        printf("取件码:%s\n", q->code_P->code);
+        q = q->next;
+      }
+    }
+    p = p->next;
+  }
 }
