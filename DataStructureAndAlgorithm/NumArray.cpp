@@ -1,7 +1,4 @@
-#include "algorithm"
-#include "iostream"
-#include "stdlib.h"
-#include "vector"
+#include <bits/stdc++.h>
 using namespace std;
 
 class NumArray
